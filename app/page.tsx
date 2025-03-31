@@ -3,10 +3,34 @@
 import { useState } from "react"
 import Signin from "./components/sign-in"
 import Signup from "./components/sign-up"
+import { useGoogleLogin } from "@react-oauth/google"
+import { toastError } from "./utils/toast"
+import { createCookie, encrypt } from "./lib/cookies/actions"
+import { redirect } from "next/navigation"
 
 export default function Home() {
   const [showCreateAccountModal, setShowCreateAccountModal] = useState<boolean>(false)
   const [showSigninModal, setShowSigninModal] = useState<boolean>(false)
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: async tokenResponse => {
+      const url = 'https://www.googleapis.com/oauth2/v3/userinfo'
+      const userInfo = await fetch(
+        url,{
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`
+          }
+        }
+      )
+      .then(res => res.json())
+
+      const cookieValue = await encrypt(JSON.stringify(userInfo))
+      await createCookie(cookieValue)
+      redirect('/home')
+    },
+    onError: err => toastError(err.error_description!)
+  })
 
   return <div className="flex flex-col sm:flex-row h-screen items-center">
     <div className="w-full flex justify-center items-center">
@@ -16,11 +40,13 @@ export default function Home() {
       <div className="sm:p-12 py-12 w-full">
         <h1 className="sm:text-3xl text-2xl font-bold">Current events</h1>
         <h1 className="sm:text-xl text-lg font-bold">Join today.</h1>
-        <button className={`mt-5 flex items-center 
+        <button 
+          className={`mt-5 flex items-center 
           justify-center w-full h-11 
           rounded-full gap-2 sm:px-20 
           px-7 bg-gray-100 text-gray-900 
           cursor-pointer`}
+          onClick={() => googleLogin()}
         >
           <img src="/google.svg" className="w-6" alt="google"/>
           <p className="sm:text-md text-sm">Sign&nbsp;up&nbsp;with&nbsp;Google</p>
