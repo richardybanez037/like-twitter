@@ -13,7 +13,7 @@ const UserMenu = ({ username }: { username: string }) => {
         <a className="w-full hover:bg-gray-900 font-bold text-md py-2 text-start pl-4">Add an existing account</a>
         <a className="w-full hover:bg-gray-900 font-bold text-md py-2 text-start pl-4"
             onClick={logoutHandler}>Log out {username}</a>
-        <div className="absolute bottom-0 left-[50%]">
+        <div className="absolute bottom-0 md:left-[50%] left-6">
             <div className={`absolute
             border-b-transparent border-x-transparent
             border-10 border-t-gray-500/50 -translate-x-[2px]

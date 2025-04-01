@@ -67,7 +67,7 @@ const LeftNavBar = ({userInfo}: {userInfo: IUserInfo | undefined}) => {
                 <img className="md:hidden block w-7" src="/feather-quill-bird-write-svgrepo-com3.svg" alt="post"/>
             </button>
         </div>
-        <div className="h-20">
+        <div>
             {
                 userInfo && <button 
                         className={`flex items-center gap-2 
